@@ -11,22 +11,14 @@ songs = [["Song:","Artists:"]]
 
 for i in range(no_of_songs):
     song = []
-    artist_loop = True
-    artists = ""
-    n = 0
     song_borders = driver.find_elements_by_class_name('track-name-wrapper.tracklist-top-align')[i]
     song_title = song_borders.find_element_by_class_name('tracklist-name.ellipsis-one-line')
+    song_artists = song_borders.find_element_by_class_name('TrackListRow__artists.ellipsis-one-line')
     song.append(song_title.text)
-    while artist_loop == True:
-        try:
-            song_artist = song_borders.find_elements_by_class_name('tracklist-row__artist-name-link')[n]
-            artists = artists + song_artist.text + ","
-            n += 1
-        except IndexError:
-            artist_loop = False
-            artists = artists[:-1] 
-    song.append(artists)
+    song.append(song_artists.text)
     songs.append(song)
+
+print(songs)
 
 with open('playlist.csv','w',newline='') as file:
     writer = csv.writer(file)

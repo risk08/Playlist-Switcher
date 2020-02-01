@@ -1,39 +1,22 @@
-import csv
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+import gdata.youtube
+import gdata.youtube.service
 
-driver = webdriver.Chrome()
-driver.get("https://open.spotify.com/playlist/0dyWi0y1RHqZeRvRHlpoXo?si=QL4YUlhLT46mwbEfrw3u8g")
-assert "Spotify" in driver.title
-playlist_title = driver.title[10:]
-no_of_songs = int(driver.find_element_by_class_name('TrackListHeader__text-silence.TrackListHeader__entity-additional-info').text[0:2])
-songs = []
+yt_service = gdata.youtube.service.YouTubeService()
 
-for i in range(no_of_songs):
-    song = []
-    song_borders = driver.find_elements_by_class_name('track-name-wrapper.tracklist-top-align')[i]
-    song_title = song_borders.find_element_by_class_name('tracklist-name.ellipsis-one-line')
-    song_artists = song_borders.find_element_by_class_name('TrackListRow__artists.ellipsis-one-line')
-    song.append(song_title.text)
-    song.append(song_artists.text)
-    songs.append(song)
+# Turn on HTTPS/SSL access.
+# Note: SSL is not available at this time for uploads.
+yt_service.ssl = True
 
-print(songs)
+yt_service.developer_key = 'AIzaSyCl4GSLMM5446DAF-9KVPBnULiIWldCsew'
+yt_service.client_id = '6546054084-0dhu8h54cknvsqcf7ea2cpog9cjl9ki1.apps.googleusercontent.com'
 
-with open('playlist.csv','w',newline='') as file:
-    writer = csv.writer(file)
-    writer.writerows(songs)
+def GetAuthSubUrl():
+    next = 'http://www.example.com/video_upload.pyc'
+    scope = 'http://gdata.youtube.com'
+    secure = False
+    session = True
+    yt_service = gdata.youtube.service.YouTubeService()
+    return yt_service.GenerateAuthSubURL(next, scope, secure, session)
 
-##driver.get("https://accounts.google.com/signin/v2/identifier?service=youtube&uilel=3&passive=true&continue=https%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26app%3Ddesktop%26hl%3Den%26next%3D%252F&hl=en&ec=65620&flowName=GlifWebSignIn&flowEntry=ServiceLogin")
-##try:
-##    element = WebDriverWait(driver, 60).until(
-##        EC.presence_of_element_located((By.ID, "avatar-btn"))
-##    )
-##    print("success")
-##finally:
-##    driver.quit()
-
-driver.quit()
+authSubUrl = GetAuthSubUrl()
+print authSubUrl

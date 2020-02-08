@@ -3,6 +3,7 @@ import time
 import pickle
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver import ActionChains
 # from selenium.webdriver.common.by import By
 # from selenium.webdriver.support.ui import WebDriverWait
 # from selenium.webdriver.support import expected_conditions as EC
@@ -36,13 +37,9 @@ with open('playlist.csv','w',newline ='') as file:
 
 
 driver.get("https://music.youtube.com/library/playlists")
-time.sleep(1)
 click_element = driver.find_element_by_class_name('image.style-scope.ytmusic-two-row-item-renderer')
 driver.execute_script("arguments[0].click();", click_element)
 time.sleep(1)
-# driver.execute_script("arguments[0].click();", click_element)
-# driver.execute_script("arguments[0].click();", click_element)
-# driver.implicitly_wait(5)
 input_element = driver.find_element_by_class_name('input.style-scope.ytmusic-playlist-form')
 input_element.send_keys(playlist_title)
 
@@ -58,7 +55,6 @@ driver.execute_script("arguments[0].click();", click_element)
 
 click_element = driver.find_element_by_class_name('submit-button.style-scope.ytmusic-playlist-form')
 driver.execute_script("arguments[0].click();", click_element)
-time.sleep(1)
 
 for j in range(len(songs)):
     if j == 0:
@@ -72,9 +68,21 @@ for j in range(len(songs)):
         input_element.send_keys(songs[j][n+1])
     input_element.send_keys("\n")
     time.sleep(1)
+    click_element = driver.find_element_by_xpath('/html/body/ytmusic-app/ytmusic-app-layout/div[3]/ytmusic-search-page/ytmusic-header-renderer/ytmusic-chip-cloud-renderer/div/ytmusic-chip-cloud-chip-renderer[1]/a')
+    driver.execute_script("arguments[0].click()", click_element)
+    action = ActionChains(driver)
+    time.sleep(1)
+    action.move_to_element(driver.find_element_by_xpath('//*[@id="contents"]/ytmusic-responsive-list-item-renderer[1]')).perform()
+    action.context_click().perform()
+    click_element = driver.find_element_by_xpath('/html/body/ytmusic-app/ytmusic-popup-container/iron-dropdown/div/ytmusic-menu-popup-renderer/paper-listbox/ytmusic-menu-navigation-item-renderer[2]/a')
+    driver.execute_script("arguments[0].click();", click_element)
+    time.sleep(1)
+    click_element = driver.find_elements_by_xpath('//*[@id="playlists"]/ytmusic-playlist-add-to-option-renderer[*]/button')
+    click_element = click_element[0]
+    driver.execute_script("arguments[0].click();", click_element)
+    print('Song not found')
     
-# input_element = driver.find_element_by_class_name('style-scope.iron-autogrow-textarea')
-# input_element.send_keys('Convertion by Playlist Switcher')
+    
 # pickle.dump( driver.get_cookies() , open("cookies.pkl","wb"))
 
 # driver.quit()
